@@ -54,4 +54,21 @@ interface MealSystemDao {
 
     @Query("SELECT * FROM settings WHERE id = 1")
     fun getSettings(): Flow<SettingsEntity?>
+        // --- BUSINESS LOGIC QUERIES (Step 5) ---
+
+    // 1. Get Total Purchases for a specific month (MM-yyyy)
+    @Query("SELECT SUM(totalCost) FROM purchases WHERE strftime('%m-%Y', date/1000, 'unixepoch') = :monthYear")
+    suspend fun getTotalPurchasesByMonth(monthYear: String): Double?
+
+    // 2. Get Total Meals (Self + Guests) for a specific month
+    @Query("SELECT COUNT(*) + SUM(guestCount) FROM meal_logs WHERE strftime('%m-%Y', date/1000, 'unixepoch') = :monthYear")
+    suspend fun getTotalMealCountByMonth(monthYear: String): Double?
+
+    // 3. Get Total Payments for a User in a specific month
+    @Query("SELECT SUM(amount) FROM payments WHERE userId = :userId AND strftime('%m-%Y', date/1000, 'unixepoch') = :monthYear")
+    suspend fun getTotalPaymentsByUser(userId: Int, monthYear: String): Double?
+    
+    // 4. Get User's specific meal count for a month
+    @Query("SELECT COUNT(*) + SUM(guestCount) FROM meal_logs WHERE userId = :userId AND strftime('%m-%Y', date/1000, 'unixepoch') = :monthYear")
+    suspend fun getUserMealCountByMonth(userId: Int, monthYear: String): Double?
 }
