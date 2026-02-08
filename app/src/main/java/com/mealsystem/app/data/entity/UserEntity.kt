@@ -5,11 +5,13 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "users")
 data class UserEntity(
-    @PrimaryKey(autoGenerate = true) val uid: Int = 0,
-    val name: String,
+    @PrimaryKey(autoGenerate = true) val userId: Int = 0,
     val email: String,
-    val password: String, // In a real app, hash this!
-    val role: String, // "admin" or "member"
+    val passwordHash: String,
+    val name: String,
+    val roleId: Int, // References Roles Table
+    val mobile: String?,
+    val room: String?,
     val balance: Double = 0.0,
     val isActive: Boolean = true
 )
